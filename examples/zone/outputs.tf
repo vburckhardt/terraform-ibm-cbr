@@ -2,8 +2,8 @@
 # Outputs
 ##############################################################################
 
-output "crn" {
-  value       = module.vpc.vpc_id
+output "vpc_id" {
+  value       = resource.ibm_is_vpc.example_vpc.id
   description = "VPC id"
 }
 

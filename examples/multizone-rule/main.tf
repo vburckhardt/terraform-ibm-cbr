@@ -19,30 +19,26 @@ module "resource_group" {
 ##############################################################################
 # VPC
 ##############################################################################
-
-module "acl_profile" {
-  source = "git::https://github.ibm.com/GoldenEye/acl-profile-ocp.git?ref=1.1.2"
+resource "ibm_is_vpc" "example_vpc" {
+  name           = "${var.prefix}-vpc"
+  resource_group = module.resource_group.resource_group_id
+  tags           = var.resource_tags
 }
 
-locals {
-  acl_rules_map = {
-    private = concat(
-      module.acl_profile.base_acl,
-      module.acl_profile.https_acl,
-      module.acl_profile.deny_all_acl
-    )
-  }
+resource "ibm_is_public_gateway" "testacc_gateway" {
+  name           = "${var.prefix}-pgateway"
+  vpc            = ibm_is_vpc.example_vpc.id
+  zone           = "${var.region}-1"
+  resource_group = module.resource_group.resource_group_id
 }
 
-module "vpc" {
-  source                    = "git::https://github.ibm.com/GoldenEye/vpc-module.git?ref=3.1.1"
-  unique_name               = var.prefix
-  ibm_region                = var.region
-  resource_group_id         = module.resource_group.resource_group_id
-  use_mgmt_subnet           = true
-  acl_rules_map             = local.acl_rules_map
-  virtual_private_endpoints = {}
-  vpc_tags                  = var.resource_tags
+resource "ibm_is_subnet" "testacc_subnet" {
+  name                     = "${var.prefix}-subnet"
+  vpc                      = ibm_is_vpc.example_vpc.id
+  zone                     = "${var.region}-1"
+  public_gateway           = ibm_is_public_gateway.testacc_gateway.id
+  total_ipv4_address_count = 256
+  resource_group           = module.resource_group.resource_group_id
 }
 
 ##############################################################################
@@ -56,7 +52,7 @@ locals {
     zone_description = "cbr-zone1-terraform"
     addresses = [{
       type  = "vpc", # to bind a specific vpc to the zone
-      value = module.vpc.vpc_crn
+      value = resource.ibm_is_vpc.example_vpc.crn,
     }]
     },
     {
