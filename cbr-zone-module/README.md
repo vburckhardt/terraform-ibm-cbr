@@ -1,3 +1,3 @@
-# Default example
+# CBR Zone Module
 
-Example to create a zone for Context Based Restrictions
+Creates a zone for Context Based Restrictions

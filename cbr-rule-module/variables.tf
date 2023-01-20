@@ -48,7 +48,7 @@ variable "rule_contexts" {
 variable "enforcement_mode" {
   type        = string
   description = "(String) The rule enforcement mode"
-  default     = "enabled"
+  default     = "report" # As part of the best practices, mode should be in report only mode for 30 days before the rules is enabled.
   validation {
     condition = anytrue([
       var.enforcement_mode == "enabled",

@@ -41,5 +41,5 @@ variable "rule_description" {
 variable "enforcement_mode" {
   type        = string
   description = "(String) The rule enforcement mode"
-  default     = "enabled"
+  default     = "report" # As part of the best practices, mode should be in report only mode for 30 days before the rules is enabled.
 }

@@ -18,7 +18,7 @@
       "name": "enforcement_mode",
       "type": "string",
       "description": "(String) The rule enforcement mode",
-      "default": "enabled",
+      "default": "report",
       "source": [
         "module.cbr_rule.ibm_cbr_rule.cbr_rule.enforcement_mode"
       ],
