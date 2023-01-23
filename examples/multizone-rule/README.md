@@ -1,6 +1,6 @@
-# Multi zone example
+# Multi-zone example
 
-An end-to-end example that uses the module's default variable values. This example uses the IBM Cloud terraform provider to:
+An end-to-end example that uses the module's default variable values. This example uses the IBM Cloud Provider to automate the following infrastructure::
 
- - Create two zones for Context Based Restrictions.
- - Create a rule for Context Based Restrictions which uses the Zone & attaches the service to it.
+ - Create two zones for context-based restrictions.
+ - Create a rule for context-based restrictions that uses the zone and attaches the service to it.
