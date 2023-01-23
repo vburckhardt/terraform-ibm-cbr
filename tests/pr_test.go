@@ -8,7 +8,7 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 )
 
-const resourceGroup = "geretain-test-resources"
+const resourceGroup = "geretain-test-cbr"
 const zoneExampleTerraformDir = "examples/zone"
 const completeExampleTerraformDir = "examples/multizone-rule"
 

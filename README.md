@@ -2,11 +2,6 @@
 
 <!-- Update the title to match the module name and add a description -->
 # Context Based Restrications Module
-<!-- UPDATE BADGES:
-1. Make sure that the badge link for the current status of the module is correct. For the status options, see https://github.ibm.com/GoldenEye/documentation/blob/master/status.md.
-2. Update the "Build Status" badge to point to the travis pipeline for the module. Replace "module-template" in two places.
-3. Update the "latest release" badge to point to the new module. Replace "module-template" in two places.
--->
 
 [![Stable (With quality checks)](https://img.shields.io/badge/Status-Stable%20(With%20quality%20checks)-green?style=plastic)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![Build Status](https://github.com/terraform-ibm-modules/terraform-ibm-cos/actions/workflows/ci.yml/badge.svg)](https://github.com/terraform-ibm-modules/terraform-ibm-cbr/actions/workflows/ci.yml)
@@ -28,7 +23,7 @@ unless real values don't help users know what to change.
 
 ```hcl
 module "ibm_cbr" "zone" {
-  # replace master with version
+  # replace main with version
   source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-cbr//cbr-zone-module?ref=main"
   name             = "zone_for_pg_access"
   account_id       = data.ibm_iam_account_settings.iam_account_settings.account_id
@@ -37,7 +32,7 @@ module "ibm_cbr" "zone" {
 }
 
 module "ibm_cbr" "rule" {
-  # replace master with version
+  # replace main with version
   source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-cbr//cbr-rule-module?ref=main"
   name             = "rule_for_pg_access"
   rule_description = "rule from terraform"
@@ -59,7 +54,8 @@ You need the following permissions to run this module.
 
 - Account Management
     - `Editor` role access
-
+- VPC Infrastructure Services
+    - `Editor` role access
 
 <!-- END MODULE HOOK -->
 <!-- BEGIN EXAMPLES HOOK -->
