@@ -1,3 +1,3 @@
 # Zone example
 
-Example to create a zone for Context Based Restrictions
+Example that creates a zone for context-based restrictions.
