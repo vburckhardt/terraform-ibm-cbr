@@ -55,6 +55,9 @@ module "cbr_account_level" {
   allow_vpcs_to_container_registry = var.allow_vpcs_to_container_registry
   allow_vpcs_to_cos                = var.allow_vpcs_to_cos
 
+  # Demonstrates how zone creation will be skipped for these two service references ["user-management", "iam-groups"]
+  skip_specific_services_for_zone_creation = ["user-management", "iam-groups"]
+
   ## Enable enforcement for key protect as an example
   ## The other services not referenced here, are either report, or disabled (when not support report)
   target_service_details = {
