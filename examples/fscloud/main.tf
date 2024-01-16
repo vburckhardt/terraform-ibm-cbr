@@ -73,9 +73,20 @@ module "cbr_account_level" {
   target_service_details = {
     # Using 'kms' for Key Protect value as target service name supported by CBR for Key Protect is 'kms'.
     "kms" = {
+      # Demonstrates how a customized CBR description (also seen as being the rule name) can be set
+      "description"      = "kms-rule-example-of-customized-description"
       "enforcement_mode" = "enabled"
       "instance_id"      = module.key_protect_module.key_protect_guid
     }
+    "cloud-object-storage" = {
+      "enforcement_mode" = "enabled"
+      "instance_id"      = module.key_protect_module.key_protect_guid
+    }
+  }
+
+  # Demonstrates how a customized name can be set for the CBR zone
+  zone_service_ref_list = {
+    "codeengine" = "codeengine-zone-example-of-customized-zone-name"
   }
 
   # Demonstrates how additional context to the rules created by this module can be added.
