@@ -15,10 +15,14 @@ variable "zone_vpc_crn_list" {
 }
 
 variable "zone_service_ref_list" {
-  type = list(string)
+  type = map(object({
+    serviceRef_location = optional(list(string), [])
+  }))
+  description = "Provide a valid service reference with the location where the context-based restriction zones are created. If no value is specified for `serviceRef_location`, the zones are not scoped to any location."
+  # Validation to restrict the target service name to be the list of supported targets only.
   validation {
     condition = alltrue([
-      for service_ref in var.zone_service_ref_list :
+      for service_ref, service_ref_location in var.zone_service_ref_list :
       contains(["cloud-object-storage", "codeengine", "containers-kubernetes",
         "databases-for-cassandra", "databases-for-elasticsearch", "databases-for-enterprisedb",
         "databases-for-etcd", "databases-for-mongodb",
@@ -29,15 +33,8 @@ variable "zone_service_ref_list" {
         "apprapp", "compliance", "event-notifications", "logdna", "logdnaat",
       "cloudantnosqldb", "globalcatalog-collection", "sysdig-monitor", "sysdig-secure", "toolchain"], service_ref)
     ])
-    error_message = "Provide a valid service reference for zone creation"
+    error_message = "Provide a valid target service name that is supported by context-based restrictions."
   }
-  default     = []
-  description = "(List) Service reference for the zone creation"
-}
-
-variable "location" {
-  type        = string
-  description = "The region in which the network zone is scoped"
 }
 
 variable "target_service_details" {

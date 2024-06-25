@@ -11,10 +11,12 @@ data "ibm_iam_account_settings" "iam_account_settings" {
 locals {
   # tflint-ignore: terraform_unused_declarations
   validate_zone_inputs = ((length(var.zone_vpc_crn_list) == 0) && (length(var.zone_service_ref_list) == 0)) ? tobool("Error: Provide a valid zone vpc and/or service references") : true
+
   # tflint-ignore: terraform_unused_declarations
-  validate_location_and_service_name = (length(setintersection(["directlink", "globalcatalog-collection", "iam-groups", "user-management"], var.zone_service_ref_list)) > 0 && var.location != null) ? tobool("Error: The services 'directlink', 'globalcatalog-collection', 'iam-groups' and 'user-management' does not support location") : true
-
-
+  validate_location_and_service_name = [
+    for item in ["directlink", "globalcatalog-collection", "iam-groups", "user-management"] :
+    contains(keys(var.zone_service_ref_list), item) ? length(var.zone_service_ref_list[item].serviceRef_location) == 0 ? true : tobool("Error: The services 'directlink', 'globalcatalog-collection', 'iam-groups' and 'user-management' do not support location") : true
+  ]
 
   # Restrict and allow the api types as per the target service
   icd_api_types = ["crn:v1:bluemix:public:context-based-restrictions::::api-type:data-plane"]
@@ -33,7 +35,7 @@ locals {
   vpc_zone_list = (length(var.zone_vpc_crn_list) > 0) ? [{
     name             = "${var.prefix}-cbr-vpc-zone"
     account_id       = data.ibm_iam_account_settings.iam_account_settings.account_id
-    zone_description = "${var.prefix}-cbr-vpc-zone-terraform"
+    zone_description = "${var.prefix}-cbr-vpc-zone"
     addresses = [
       for zone_vpc_crn in var.zone_vpc_crn_list :
       { "type" = "vpc", value = zone_vpc_crn }
@@ -41,18 +43,27 @@ locals {
   }] : []
 
   service_ref_zone_list = (length(var.zone_service_ref_list) > 0) ? [
-    for serviceref in var.zone_service_ref_list : {
+    for serviceref, location in var.zone_service_ref_list : {
       name             = "${var.prefix}-${serviceref}-cbr-serviceref-zone"
       account_id       = data.ibm_iam_account_settings.iam_account_settings.account_id
-      zone_description = "${serviceref}-cbr-serviceref-zone-terraform"
+      zone_description = "${serviceref}-cbr-serviceref-zone"
       # when the target service is containers-kubernetes or any icd services, context cannot have a serviceref
-      addresses = [
+      addresses = length(location.serviceRef_location) == 0 ? [
         {
           type = "serviceRef"
           ref = {
             account_id   = data.ibm_iam_account_settings.iam_account_settings.account_id
             service_name = serviceref
-            location     = var.location
+            location     = null
+          }
+        }
+        ] : [for loc in location.serviceRef_location :
+        {
+          type = "serviceRef"
+          ref = {
+            account_id   = data.ibm_iam_account_settings.iam_account_settings.account_id
+            service_name = serviceref
+            location     = loc
           }
         }
       ]
@@ -60,6 +71,7 @@ locals {
 
   zone_list = concat(tolist(local.vpc_zone_list), tolist(local.service_ref_zone_list))
 }
+
 module "cbr_zone" {
   count            = length(local.zone_list)
   source           = "../cbr-zone-module"
