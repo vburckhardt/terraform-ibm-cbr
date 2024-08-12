@@ -98,9 +98,18 @@ module "cbr_account_level" {
     }
   }
 
-  # Demonstrates how a customized name can be set for the CBR zone
+  # Demonstrates how a customized name and an optional location can be set for the CBR serviceRef zones
   zone_service_ref_list = {
-    "codeengine" = "codeengine-zone-example-of-customized-zone-name"
+    codeengine = {
+      zone_name           = "codeengine-zone-example-of-customized-zone-name"
+      serviceRef_location = ["au", "tok"]
+    },
+    server-protect = {
+      serviceRef_location = ["fr"]
+    },
+    cloud-object-storage = {
+      zone_name = "COS-zone-example-of-customized-zone-name"
+    }
   }
 
   # Demonstrates how additional context to the rules created by this module can be added.
