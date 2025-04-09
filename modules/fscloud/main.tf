@@ -24,9 +24,6 @@ locals {
     "cloud-object-storage" : {
       "enforcement_mode" : "report"
     },
-    "codeengine" : {
-      "enforcement_mode" : "report"
-    },
     "container-registry" : {
       "enforcement_mode" : "report"
     },
